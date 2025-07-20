@@ -12,7 +12,7 @@ int main() {
     GetModuleFileNameA(NULL, path, MAX_PATH); // gets full path
     persist(path);
 
-    HANDLE file = CreateFileA("lowmemlog.txt", FILE_APPEND_DATA, FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE file = CreateFileA("log.txt", FILE_APPEND_DATA, FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (file == INVALID_HANDLE_VALUE) return 1;
 	// CreateFileA instead of fopen for lower footprint, fails = exit early, FILE* goes through stdio too much mem
 
