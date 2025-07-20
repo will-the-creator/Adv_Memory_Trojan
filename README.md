@@ -17,3 +17,4 @@ By accessing or using this code, you acknowledge that you understand the risks a
 ### How I Learned
 - [learn-c.org](https://www.learn-c.org/)
 - [lowlevel.academy](https://lowlevel.academy/)
+- [https://learn.microsoft.com/en-us/windows/win32/inputdev/keyboard-input](https://learn.microsoft.com/en-us/windows/win32/inputdev/keyboard-input)
