@@ -13,3 +13,7 @@ This project is intended solely for **educational and research purposes**. It is
 ---
 
 By accessing or using this code, you acknowledge that you understand the risks and agree to use it **responsibly and lawfully**.
+
+### How I Learned
+[lear-c.org](https://www.learn-c.org/)
+[lowlevel_academy](https://lowlevel.academy/)
