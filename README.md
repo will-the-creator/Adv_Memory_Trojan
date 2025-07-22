@@ -20,4 +20,4 @@ By accessing or using this code, you acknowledge that you understand the risks a
 - [learn.microsoft.com/en-us/windows/win32/apiindex](https://learn.microsoft.com/en-us/windows/win32/apiindex/windows-api-list)
 - [lowlevel.academy](https://lowlevel.academy/)
 - [learn.microsoft.com/en-us/windows/win32/inputdev/keyboard-input](https://learn.microsoft.com/en-us/windows/win32/inputdev/keyboard-input)
-- [docs.redteamleaders.com] (https://docs.redteamleaders.com/offensive-security/privilege-escalation/windows-uac-bypass-techniques)
+- [docs.redteamleaders.com](https://docs.redteamleaders.com/offensive-security/privilege-escalation/windows-uac-bypass-techniques)
