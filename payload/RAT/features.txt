@@ -1,0 +1,10 @@
+/rat_project
+    main.c
+    network.c/h
+    commands.c/h
+    persistence.c/h # use already made
+    fileops.c/h
+    process.c/h
+    info.c/h
+    stealth.c/h
+    makefile

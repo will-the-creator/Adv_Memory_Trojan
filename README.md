@@ -22,3 +22,4 @@ By accessing or using this code, you acknowledge that you understand the risks a
 - [learn.microsoft.com/en-us/windows/win32/inputdev/keyboard-input](https://learn.microsoft.com/en-us/windows/win32/inputdev/keyboard-input)
 - [uac-bypass-docs](https://github.com/CyberWolfByte/usb-uac-bypass)
 - [vx-underground.org](vx-underground.org)
+- [geeksforgeeks.org/c/socket-programming-c](https://www.geeksforgeeks.org/c/socket-programming-cc/)
