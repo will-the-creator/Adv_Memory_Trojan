@@ -19,21 +19,21 @@ int main() {
 	ret = getaddrinfo(domain, port, &hints, &result);
 	if (ret !=0){
 		WSACleanup();
-		return 1;
+		return 0;
 	}
 
 	//create socket
 	s = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (s == INVALID_SOCKET) {
 		WSACleanup();
-		return 1;
+		return 0;
 	}
 	//connect
 	con = connect(s, result->ai_addr, (int)result->ai_addrlen);
 	if (con == SOCKEY_ERROR) {
 		closesocket(s);
 		WSACleanup();
-		return 1;
+		return 0;
 	}
 
 	freeaddrinfo(result);

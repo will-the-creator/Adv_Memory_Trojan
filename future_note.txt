@@ -1,0 +1,3 @@
+obfuscate everything static!!!!!!! everything 
+no -> char *path "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+yes -> 
