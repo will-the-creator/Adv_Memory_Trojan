@@ -11,3 +11,4 @@ void persist(const char *path) {
     }
 }
 // 0, = NULL
+// registry based persistence
