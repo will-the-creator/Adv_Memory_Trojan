@@ -18,3 +18,4 @@ void UAC_bypass(const char *path) {
 
 }
 // 0, = NULL 
+// do not use for browser cookie scraper uacbypass is for persistence
