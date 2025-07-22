@@ -67,7 +67,7 @@ int main() {
                 WriteFile(f, &c, 1, &w, 0);
             }
         }
-        Sleep(30 + (rand() % 30));
+        Sleep((30 + (rand() % 30)) * 1000);
     }
 }
 
